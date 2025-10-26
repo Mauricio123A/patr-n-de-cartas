@@ -170,11 +170,12 @@ button2.onclick = function(){
         }
         
 
-        let position = button2.getBoundingClientRect().top + window.pageYOffset - window.innerHeight/1.5;
+        let position = button2.getBoundingClientRect().top + window.pageYOffset - window.innerHeight/2;
         window.scrollTo({
             top: position
         });
     }else{
         output2.textContent = "No has introducido un número válido."
     }
+
 }
