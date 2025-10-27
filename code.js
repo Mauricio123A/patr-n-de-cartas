@@ -7,6 +7,10 @@ let button2 = document.getElementById("button2")
 let input2 = document.getElementById("textarea2")
 let output2 = document.getElementById("output2")
 
+let button3 = document.getElementById("button3")
+let input3 = document.getElementById("textarea3")
+let output3 = document.getElementById("output3")
+
 toggle.onclick = function(){
     show = !show
     if (show){
@@ -62,7 +66,7 @@ function makeConfigHardWay(max){
     for (let i = 0;  i < config.length;){
         if (repeat){
             repeat = false
-            repeated[repeatedBool.indexOf(config[i])] += 1
+            repeated[quickSearch(repeatedBool,config[i])] += 1
             config.push(config.splice(i, 1)[0])
         }else{
             repeat = true
@@ -87,9 +91,10 @@ function makeConfigHardWay(max){
         repeated = repeated.filter(x => x !== e);
         divisions.push(thisDivision)
         e++
-        if (repeated.indexOf(e) == -1){
+        const set = new Set(repeated);
+        if (set.has(e) == false){
             e++
-            if (repeated.indexOf(e) == -1){
+            if (set.has(e) == false){
                 repeated = []
             }
         }
@@ -129,6 +134,39 @@ function makeConfigEasyWay(max){
     config = lastConfig.slice()
     for (let e = 0; e < output.length; e++){
         config.splice(lastConfig.indexOf(output[e]), 1, e+1)
+    }
+    return config
+}
+
+function quickSearch(array, value){
+    let start = 0
+    let end = array.length-1
+    while (start <= end){
+        let middle = Math.floor((start+end)/2)
+        if (value > array[middle]){
+            start = middle+1
+        }else if (value == array[middle]){
+            return middle
+        }else{
+            end = middle-1
+        }
+    }
+    console.log("no encontrado")
+    return -1
+}
+
+function makeConfigEasyWay2(max){
+    let config = []
+    let i = 0
+    while (i < max){
+        i++
+        config.push(i)
+    }
+    let lastConfig = config.slice()
+    let output = outputConfig(config)
+    config = lastConfig.slice()
+    for (let e = 0; e < output.length; e++){
+        config.splice(quickSearch(lastConfig,output[e]), 1, e+1)
     }
     return config
 }
@@ -177,5 +215,27 @@ button2.onclick = function(){
     }else{
         output2.textContent = "No has introducido un número válido."
     }
+}
 
+button3.onclick = function(){
+
+    let number = input3.value
+    let time = Date.now()/1000
+    if (Number(number) != NaN & Number(number) > 0){
+        number = Number(number)
+        let config = makeConfigEasyWay2(number)
+        if (show){
+            output3.innerHTML = "(" + config.join(", ") + ")" + "<br> tiempo que tomó: " + (Date.now()/1000-time)
+        }else{
+            output3.innerHTML = "tiempo que tomó: " + (Date.now()/1000-time)
+        }
+        
+
+        let position = button3.getBoundingClientRect().top + window.pageYOffset - window.innerHeight/1.5;
+        window.scrollTo({
+            top: position
+        });
+    }else{
+        output3.textContent = "No has introducido un número válido."
+    }
 }
